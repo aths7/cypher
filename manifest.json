@@ -4,7 +4,7 @@
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "Hides text in a simple diagramatic cypher to make reading unrecognizable for viewers.",
-	"author": "Obsidian",
+	"author": "Atharva",
 	"authorUrl": "https://github.com/aths7",
 	"fundingUrl": "https://github.com/aths7",
 	"isDesktopOnly": false
