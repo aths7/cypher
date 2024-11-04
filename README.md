@@ -1,0 +1,2 @@
+# cypher
+Obsidian Plugin
