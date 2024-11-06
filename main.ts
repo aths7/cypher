@@ -32,7 +32,7 @@ export default class CypherPlugin extends Plugin {
 		// Command to cypher selected text
 		this.addCommand({
 			id: 'cypher-transform',
-			name: 'Transform Selected Text to Cypher',
+			name: 'Transform Selected Text to Encrypted Value',
 			editorCallback: (editor: Editor, view: MarkdownView) => this.transformText(editor),
 		});
 
