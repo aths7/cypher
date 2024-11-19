@@ -21,10 +21,10 @@ export default class CypherPlugin extends Plugin {
 		this.addRibbonIcon('dice', 'Cypher Text', () => {
 			this.isCypherEnabled = !this.isCypherEnabled;
 			if (this.isCypherEnabled) {
-				new Notice('Cypher Plugin Activated!');
+				new Notice('Cypher Activated!');
 				this.applyCypher();
 			} else {
-				new Notice('Cypher Plugin Deactivated!');
+				new Notice('Cypher Deactivated!');
 				this.revertCypher();
 			}
 		}).addClass('cypher-plugin-ribbon-class');
@@ -51,7 +51,7 @@ export default class CypherPlugin extends Plugin {
 	}
 
 	onunload() {
-		console.log("Cypher Plugin unloaded.");
+		console.log("Cypher unloaded.");
 	}
 
 	async loadSettings() {
@@ -176,7 +176,7 @@ class CypherSettingTab extends PluginSettingTab {
 	display(): void {
 		const { containerEl } = this;
 		containerEl.empty();
-		containerEl.createEl('h2', { text: 'Cypher Plugin Settings' });
+		containerEl.createEl('h2', { text: 'Cypher Settings' });
 
 		new Setting(containerEl)
 			.setName('Cypher Style')
