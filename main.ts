@@ -1,4 +1,5 @@
-import { App, Editor, MarkdownView, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { addIcon, App, Editor, MarkdownView, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+
 
 interface CypherPluginSettings {
 	cypherStyle: string;
@@ -15,43 +16,45 @@ export default class CypherPlugin extends Plugin {
 	private isCypherEnabled: boolean = false;
 
 	async onload() {
-		await this.loadSettings();
+	await this.loadSettings();
 
-		// Ribbon icon for toggling cypher mode
-		this.addRibbonIcon('dice', 'Cypher Text', () => {
-			this.isCypherEnabled = !this.isCypherEnabled;
-			if (this.isCypherEnabled) {
-				new Notice('Cypher Activated!');
-				this.applyCypher();
-			} else {
-				new Notice('Cypher Deactivated!');
-				this.revertCypher();
+	// Ribbon icon for toggling cypher mode
+	addIcon('cypher', `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square-lock"><path d="M19 15v-2a2 2 0 1 0-4 0v2"/><path d="M9 17H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3.5"/><rect x="13" y="15" width="8" height="5" rx="1"/></svg>`);
+
+	this.addRibbonIcon('cypher', 'Cypher Text', () => {
+		this.isCypherEnabled = !this.isCypherEnabled;
+		if (this.isCypherEnabled) {
+			new Notice('Cypher Activated!');
+			this.applyCypher();
+		} else {
+			new Notice('Cypher Deactivated!');
+			this.revertCypher();
+		}
+	}).addClass('cypher-plugin-ribbon-class');
+
+	// Command for transforming selected t`ext
+	this.addCommand({
+		id: 'cypher-transform',
+		name: 'Encrypt Selected Text',
+		editorCallback: (editor: Editor, view: MarkdownView) => this.transformText(editor),
+	});
+
+	// Add settings tab
+	this.addSettingTab(new CypherSettingTab(this.app, this));
+
+	// Editor change event for real-time typing transformation
+	this.registerEvent(
+		this.app.workspace.on("editor-change", () => {
+			const editor = this.app.workspace.getActiveViewOfType(MarkdownView)?.editor;
+			if (editor && this.isCypherEnabled) {
+				this.debounceTyping(editor, 500);
 			}
-		}).addClass('cypher-plugin-ribbon-class');
-
-		// Command to cypher selected text
-		this.addCommand({
-			id: 'cypher-transform',
-			name: 'Transform Selected Text to Encrypted Value',
-			editorCallback: (editor: Editor, view: MarkdownView) => this.transformText(editor),
-		});
-
-		// Add settings tab
-		this.addSettingTab(new CypherSettingTab(this.app, this));
-
-		// Editor change event for real-time typing transformation
-		this.registerEvent(
-			this.app.workspace.on("editor-change", () => {
-				const editor = this.app.workspace.getActiveViewOfType(MarkdownView)?.editor;
-				if (editor && this.isCypherEnabled) {
-					this.debounceTyping(editor, 500);
-				}
-			})
-		);
-	}
+		})
+	);
+}
 
 	onunload() {
-		console.log("Cypher unloaded.");
+		console.log("Cypher Unloaded.");
 	}
 
 	async loadSettings() {
@@ -165,6 +168,7 @@ export default class CypherPlugin extends Plugin {
 	}
 }
 
+// Updated settings tab
 class CypherSettingTab extends PluginSettingTab {
 	plugin: CypherPlugin;
 
@@ -176,11 +180,10 @@ class CypherSettingTab extends PluginSettingTab {
 	display(): void {
 		const { containerEl } = this;
 		containerEl.empty();
-		containerEl.createEl('h2', { text: 'Cypher Settings' });
 
 		new Setting(containerEl)
 			.setName('Cypher Style')
-			.setDesc('Choose the style for cyphering text')
+			.setDesc('Choose The Style For Cyphering Text')
 			.addDropdown(dropdown => dropdown
 				.addOption('diagrammatic', 'Diagrammatic')
 				.setValue(this.plugin.settings.cypherStyle)
